@@ -1,4 +1,4 @@
-// Load posts from Local Storage
+// Initialize posts from localStorage
 let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
 // Render posts
@@ -7,7 +7,6 @@ function renderPosts() {
   postsDiv.innerHTML = "";
   posts.forEach((p, index) => {
     const commentsHTML = p.comments.map(c => `<div class="comment"><strong>${c.user}:</strong> ${c.text}</div>`).join("");
-
     postsDiv.innerHTML += `
       <div class="post card mb-3">
         <div class="d-flex align-items-center mb-2">
@@ -22,7 +21,7 @@ function renderPosts() {
         </div>
         <div id="commentBox${index}" class="comment-box" style="display:none;">
           <input type="text" id="commentInput${index}" class="form-control mb-2" placeholder="Write a comment...">
-          <button onclick="addComment(${index})" class="btn btn-sm btn-secondary">Comment</button>
+          <button onclick="addComment(${index})" class="btn btn-sm btn-secondary mb-2">Comment</button>
           ${commentsHTML}
         </div>
       </div>
@@ -30,7 +29,7 @@ function renderPosts() {
   });
 }
 
-// Create post
+// Create a new post
 function createPost() {
   const text = document.getElementById("postText").value;
   const fileInput = document.getElementById("postImage");
@@ -48,6 +47,7 @@ function createPost() {
   }
 }
 
+// Save post to localStorage
 function savePost(text, image) {
   if (text.trim() === "" && image === "") return;
   posts.unshift({ text, image, likes: 0, comments: [] });
@@ -73,13 +73,13 @@ function toggleCommentBox(index) {
 // Add comment
 function addComment(index) {
   const input = document.getElementById("commentInput" + index);
-  const text = input.value;
-  if (text.trim() === "") return;
+  const text = input.value.trim();
+  if (text === "") return;
   posts[index].comments.push({ user: "You", text });
   localStorage.setItem("posts", JSON.stringify(posts));
   renderPosts();
 }
 
-// Init
+// Initialize
 document.getElementById("postBtn").addEventListener("click", createPost);
 renderPosts();
